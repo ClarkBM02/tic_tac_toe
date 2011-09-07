@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Ridemo::Application.config.secret_token = '8cc8909d8296dd0b40374bcbcf5c289a54fc930988df39d615f81a633befc420a0f638555c04895c6fe4e26bf765a74dad324c8f1271c5c7aeb088a603059fa8'
+Ridemo::Application.config.secret_token = '113dbeffc20669bd977f3b8f2649703d64891ffe250c629f38dba876271847af205be4a1018f65c68e60939e5075afed6dfca3bb7fc6c0e5cad3466e10fcf91f'
