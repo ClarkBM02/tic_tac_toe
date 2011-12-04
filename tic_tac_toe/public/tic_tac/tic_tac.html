@@ -2,9 +2,87 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <title></title>
+    <title>Tic Tac Toe! (Brittany Clark)</title>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/tic_tac_style.css"/>
+    <script type="text/javascript" src="../scripts/jquery-1.4.js"></script>
+    <script type="text/javascript">
+        var current_player = 0;
+
+        $(function() {
+            $('img').each(
+                function (){
+                this.src= "../images/tic_tac/tictacsquare.jpg";
+		        $(this).bind('click', function() {
+                    if (current_player == 0){
+                        (this).src="../images/tic_tac/tictacX.jpg";}
+                    else{
+                        (this).src="../images/tic_tac/tictacO.jpg";
+                    };
+
+                    $(this).unbind('click');
+
+                    current_player = 1-current_player;
+                });
+		        $(this).bind('hover', hover());
+		        $(this).bind('mouseout', leave());
+            });
+        });
+
+        $(function hover(event){
+           this.src= "../images/tic_tac/tictacX.jpg";
+        });
+
+        $(function leave(event){
+            this.src= "../images/tic_tac/tictacsquare.jpg";
+        });
+
+        $(function mark(event){
+          if (current_player == 0){
+            $(this).src="../images/tic_tac/tictacX.jpg";}
+          else{
+            $(this).src="../images/tic_tac/tictacO.jpg";};
+
+          this.unbind("click mouseover mouseout");
+
+          // Check if someone won
+          if ( !checkWin() ) {
+            // Change the current player
+                current_player = (1-current_player);
+
+           }
+           else{
+              $('img').each(
+		        function (){
+                this.unbind('click'),
+		        this.unbind('mouseover'),
+		        this.unbind('mouseout');
+                });
+          };
+        });
+
+        $(function checkWin(){
+               return false;
+        });
+
+        $(function restart(event){
+	        current_player = 1;
+	        setup();
+        });
+    </script>
 </head>
 <body>
+        <H1>Tic Tac Toe</H1>
 
+       <table id=gametable bgcolor=#2f4f4f>
+           <tr class=tr1><td><img></td>
+               <td><img></td>
+               <td><img></td></tr>
+           <tr class=tr2><td><img></td>
+               <td><img></td>
+               <td><img></td></tr>
+           <tr class=tr3><td><img></td>
+               <td><img></td>
+               <td><img></td></tr>
+       </table>
 </body>
 </html>
