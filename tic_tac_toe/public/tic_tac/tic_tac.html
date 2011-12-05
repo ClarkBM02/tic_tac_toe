@@ -7,82 +7,208 @@
     <script type="text/javascript" src="../scripts/jquery-1.4.js"></script>
     <script type="text/javascript">
         var current_player = 0;
+        var winner = -1;
+        var numDraws = 0;
+        var num0Win = 0;
+        var num1Win = 0;
 
-        $(function() {
+        //This function sets up the game
+        $(function gameSetup() {
             $('img').each(
                 function (){
-                this.src= "../images/tic_tac/tictacsquare.jpg";
-		        $(this).bind('click', function() {
-                    if (current_player == 0){
-                        (this).src="../images/tic_tac/tictacX.jpg";}
-                    else{
+                    //remove img classes, in case they are lingering from a previous game
+                    $(this).removeClass();
+
+                    this.src= "../images/tic_tac/tictacsquare.jpg";
+
+                    //Bind the click function
+                    $(this).one('click', function() {
+                        if (current_player == 0){
+                            (this).src="../images/tic_tac/tictacX.jpg";
+                            $(this).addClass('X');
+                        }
+                        else{
+                            (this).src="../images/tic_tac/tictacO.jpg";
+                            $(this).addClass('O');
+                        };
+
+                        $(this).unbind('mouseover mouseout');
+
+                        // Check if someone won
+                        if ( !checkWin() ) {
+                            // Change the current player
+                            current_player = (1-current_player);
+
+                        }//end check win if
+                        else{
+                            $('img').each(
+                            function (){
+                                $(this).unbind('click mouseover mouseout');
+                            });
+
+                            if(winner == -1){
+                                alert("Draw! Try again.");
+                                numDraws++;
+                            }
+                            else{
+                                if(winner == 1){
+                                    alert("Player 2, you win!");
+                                    num1Win++;
+                                }
+                                else{
+                                    alert("Player 1, you win!");
+                                    num0Win++;
+                                }
+                            }
+
+                            current_player = 0;
+                            winner=-1
+                            gameSetup();
+                        };     //end check win else
+                });   //end click
+
+                //Bind the mouseover function. This function will show the letter the user may place if he clicks.
+		        $(this).bind('mouseover', function(){
+
+                    //Determine which picture to display based on which player's turn it is.
+                    if (current_player == 0)
+                        this.src= "../images/tic_tac/tictacX.jpg";
+                    else
                         (this).src="../images/tic_tac/tictacO.jpg";
-                    };
+                });//end mouseover
 
-                    $(this).unbind('click');
+                //Bind the mouseout function. This function returns the square back to the blank square.
+		        $(this).bind('mouseout', function(){
+                     this.src= "../images/tic_tac/tictacsquare.jpg";
+                });//end mouseout
+            }); //end img each function
 
-                    current_player = 1-current_player;
-                });
-		        $(this).bind('hover', hover());
-		        $(this).bind('mouseout', leave());
+            showScore();
+
+            $('input#resetButton').bind('click', function(){
+               num0Win = 0;
+                num1Win = 0;
+                numDraws = 0;
+                showScore();
             });
-        });
+        }); //end gameSetup function
 
-        $(function hover(event){
-           this.src= "../images/tic_tac/tictacX.jpg";
-        });
+        //This function checks if a win has been achieved by either player.
+        function checkWin(){
+            if ( ($('table#gametable tr:nth-child(1) td:nth-child(1) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(1) td:nth-child(2) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(1) td:nth-child(3) img').hasClass('X'))||
+                    ($('table#gametable tr:nth-child(2) td:nth-child(1) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(2) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(3) img').hasClass('X'))||
+                    ($('table#gametable tr:nth-child(3) td:nth-child(1) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(2) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(3) img').hasClass('X'))||
+                    ($('table#gametable tr:nth-child(1) td:nth-child(1) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(1) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(1) img').hasClass('X'))||
+                    ($('table#gametable tr:nth-child(1) td:nth-child(2) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(2) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(2) img').hasClass('X'))||
+                    ($('table#gametable tr:nth-child(1) td:nth-child(3) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(3) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(3) img').hasClass('X'))||
+                    ($('table#gametable tr:nth-child(1) td:nth-child(1) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(2) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(3) img').hasClass('X'))||
+                    ($('table#gametable tr:nth-child(1) td:nth-child(3) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(2) img').hasClass('X')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(1) img').hasClass('X'))){
+                winner = 0;
+                return true;
+            }//end X if
+            else {
+                if ( ($('table#gametable tr:nth-child(1) td:nth-child(1) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(1) td:nth-child(2) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(1) td:nth-child(3) img').hasClass('O'))||
+                    ($('table#gametable tr:nth-child(2) td:nth-child(1) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(2) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(3) img').hasClass('O'))||
+                    ($('table#gametable tr:nth-child(3) td:nth-child(1) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(2) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(3) img').hasClass('O'))||
+                    ($('table#gametable tr:nth-child(1) td:nth-child(1) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(1) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(1) img').hasClass('O'))||
+                    ($('table#gametable tr:nth-child(1) td:nth-child(2) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(2) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(2) img').hasClass('O'))||
+                    ($('table#gametable tr:nth-child(1) td:nth-child(3) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(3) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(3) img').hasClass('O'))||
+                    ($('table#gametable tr:nth-child(1) td:nth-child(1) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(2) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(3) img').hasClass('O'))||
+                    ($('table#gametable tr:nth-child(1) td:nth-child(3) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(2) td:nth-child(2) img').hasClass('O')&&
+                    $('table#gametable tr:nth-child(3) td:nth-child(1) img').hasClass('O'))){
+                winner = 1;
+                return true;
+            }//end O if
+            else{
+                if (checkFull())
+                    return true;
+                else
+                    return false;
+               }
+            }//end else
+        };//end check win
 
-        $(function leave(event){
-            this.src= "../images/tic_tac/tictacsquare.jpg";
-        });
+        //This function checks if the board is full or not. If it is, then a draw has been reached.
+        function checkFull(){
+            var full = true;
 
-        $(function mark(event){
-          if (current_player == 0){
-            $(this).src="../images/tic_tac/tictacX.jpg";}
-          else{
-            $(this).src="../images/tic_tac/tictacO.jpg";};
+            $('img').each(
+               function(){
+                   if(!($(this).hasClass('X')||$(this).hasClass('O')))
+                    full = false;
+              });
 
-          this.unbind("click mouseover mouseout");
+            if(full==true)
+                return true;
+            else
+                return false;
+        };
 
-          // Check if someone won
-          if ( !checkWin() ) {
-            // Change the current player
-                current_player = (1-current_player);
+        function showScore(){
+              $('table#scoretable tr:last td:nth-child(1)').text(num0Win);
+              $('table#scoretable tr:last td:nth-child(2)').text(num1Win);
+              $('table#scoretable tr:last td:nth-child(3)').text(numDraws);
+        };
 
-           }
-           else{
-              $('img').each(
-		        function (){
-                this.unbind('click'),
-		        this.unbind('mouseover'),
-		        this.unbind('mouseout');
-                });
-          };
-        });
-
-        $(function checkWin(){
-               return false;
-        });
-
-        $(function restart(event){
-	        current_player = 1;
-	        setup();
-        });
     </script>
 </head>
 <body>
         <H1>Tic Tac Toe</H1>
-
+        <p>
        <table id=gametable bgcolor=#2f4f4f>
-           <tr class=tr1><td><img></td>
+           <tr><td><img></td>
                <td><img></td>
                <td><img></td></tr>
-           <tr class=tr2><td><img></td>
+           <tr><td><img></td>
                <td><img></td>
                <td><img></td></tr>
-           <tr class=tr3><td><img></td>
+           <tr><td><img></td>
                <td><img></td>
                <td><img></td></tr>
        </table>
+           </p>
+        <p>
+        <table id=scoretable bgcolor=#b0c4de border=1>
+            <tr><td>Player 1</td>
+                <td>Player 2</td>
+                <td>Draws</td></tr>
+            <tr><td></td>
+                <td></td>
+                <td></td></tr>
+        </table>
+        </p>
+        <!-- http://www.cssbuttongenerator.com/ -->
+        <p><input type=button class=myButton id=resetButton value="Reset Score"/></p>
 </body>
 </html>
